@@ -1,0 +1,87 @@
+
+-- Configuration for toggling terminal window
+local Terminal = require('toggleterm.terminal').Terminal
+
+-- Size function for terminal window
+local function size(term)
+  if term.direction == "horizontal" then
+    return 15
+  elseif term.direction == "vertical" then
+    return vim.o.columns * 0.4
+  end
+end
+
+-- Toggleterm setup
+require('toggleterm').setup{
+  size = size,
+  open_mapping = [[<Bslash>t]],
+  hide_numbers = true,
+  shade_filetypes = {},
+  shade_terminals = true,
+  start_in_insert = true,
+  insert_mappings = true,
+  persist_size = true,
+  direction = 'horizontal',
+  close_on_exit = true,
+  shell = vim.o.shell,
+  float_opts = {
+    border = 'curved',
+    winblend = 3,
+    highlights = {
+      border = "Normal",
+      background = "Normal",
+    }
+  }
+}
+
+-- Terminal key mappings
+function _G.set_terminal_keymaps()
+  local opts = { noremap = true, silent = true }
+  local mappings = {
+    { 't', '<esc>', [[<C-\><C-n><C-W><C-p>]], opts },
+    { 't', '<C-W><C-W>', [[<C-\><C-n><C-W><C-W>]], opts },
+    { 't', '<C-w>N', [[<C-\><C-n>]], opts },
+    { 't', 'jk', [[<C-\><C-n>]], opts },
+    { 't', '<leader>n', [[<C-\><C-n><leader>n]], opts },
+    { 't', '<leader>ff', [[<C-\><C-n> ?FAIL<cr>]], opts },
+    { 't', '<C-w><C-h>', [[<C-\><C-n><C-W>h]], opts },
+    { 't', '<C-w><C-j>', [[<C-\><C-n><C-W>j]], opts },
+    { 't', '<C-w><C-k>', [[<C-\><C-n><C-W>k]], opts },
+    { 't', '<C-w><C-l>', [[<C-\><C-n><C-W>l]], opts },
+  }
+  for _, mapping in ipairs(mappings) do
+    vim.api.nvim_buf_set_keymap(0, mapping[1], mapping[2], mapping[3], mapping[4])
+  end
+end
+
+-- Apply terminal key mappings only for toggleterm
+vim.cmd('autocmd! TermOpen term://*toggleterm#* lua set_terminal_keymaps()')
+
+-- Bottom terminal toggle function
+local bottomTerminal = Terminal:new({ direction = 'horizontal', hidden = true, close_on_exit = true, size = 15 })
+
+function _bottomTerminal_toggle()
+  -- Close the right terminal if it's open
+  if rightTerminal:is_open() then
+    rightTerminal:close()
+  end
+  bottomTerminal:toggle()
+end
+
+-- Right terminal toggle function
+local rightTerminal = Terminal:new({ direction = 'vertical', hidden = true, close_on_exit = true, size = 30 })
+
+function _rightTerminal_toggle()
+  -- Close the bottom terminal if it's open
+  if bottomTerminal:is_open() then
+    bottomTerminal:close()
+  end
+  rightTerminal:toggle()
+end
+
+-- Key mapping for bottom terminal toggle
+vim.api.nvim_set_keymap("n", "<leader>t", "<cmd>lua _bottomTerminal_toggle()<CR>", { noremap = true, silent = true })
+
+-- Key mapping for right terminal toggle
+vim.api.nvim_set_keymap("n", "<leader>rt", "<cmd>lua _rightTerminal_toggle()<CR>", { noremap = true, silent = true })
+

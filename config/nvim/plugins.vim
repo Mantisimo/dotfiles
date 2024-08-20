@@ -1,6 +1,7 @@
 
 " load vim-plug
 if empty(glob("~/.config/nvim/autoload/plug.vim"))
+    execute '!mkdir -p ~/.config/nvim/autoload'
     execute '!curl -fLo ~/.config/nvim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
 endif
 
@@ -19,7 +20,7 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'Raimondi/delimitMate'
 Plug 'davidhalter/jedi-vim'
 Plug 'tpope/vim-surround'
-Plug 'leafgarland/typescript-vim'
+"Plug 'leafgarland/typescript-vim'
 Plug 'diepm/vim-rest-console'
 Plug 'jreybert/vimagit'
 Plug 'akinsho/toggleterm.nvim'
@@ -30,6 +31,9 @@ Plug 'L3MON4D3/LuaSnip'
 Plug 'Mantisimo/friendly-snippets'
 Plug 'github/copilot.vim'
 Plug 'sheerun/vim-polyglot'
+Plug 'OmniSharp/omnisharp-vim'
+Plug 'NLKNguyen/papercolor-theme'
+Plug 'leafOfTree/vim-svelte-plugin'
 " Plug 'tpope/vim-cucumber'
 call plug#end()
 
@@ -50,3 +54,5 @@ for f in split(glob(s:context . '/plugin-custom/*.{vim,lua}'), '\n')
        exe 'source' f
    endif
 endfor
+
+

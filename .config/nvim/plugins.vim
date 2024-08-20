@@ -1,5 +1,10 @@
 " load vim-plug
 if empty(glob("~/.config/nvim/autoload/plug.vim"))
+
+    if empty(glob("~/.config/nvim/autoload"))
+        execute '!mkdir -p ~/.config/nvim/autoload'
+    endif
+
     if !empty($XDG_CONFIG_HOME)
         execute '!curl -fLo $NERD_TREE_ROOT/nvim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
     else

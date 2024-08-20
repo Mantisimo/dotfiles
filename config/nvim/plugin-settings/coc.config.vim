@@ -1,5 +1,5 @@
 let g:coc_global_extensions=[ 'coc-omnisharp', 'coc-tsserver', 'coc-json', 'coc-snippets']
-let g:coc_confing_home = '~/dev/dotfiles/config/nvim/coc-settings.json'
+
 nmap <leader>qf <Plug>(coc-fix-current)
 "
 " GoTo code navigation.

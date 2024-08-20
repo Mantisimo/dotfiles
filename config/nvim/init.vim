@@ -1,3 +1,5 @@
+
+let g:coc_confing_home = '~/dev/dotfiles/config/nvim/coc-settings.json'
 set nocompatible
 
 " Current filepath

@@ -8,7 +8,8 @@ nnoremap <silent> ZD :cq<CR>
 nnoremap <silent> <Leader>q :bp\|bd#<CR>
 
 " Close all buffers except this one
-nnoremap <silent> <leader>o :%bd\|e#\|bd#<cr>
+" rewriten to close all buffers except the current one, see bottom of file
+"nnoremap <silent> <leader>o :%bd\|e#\|bd#<cr>
 
 "Easy navigation
 " nnoremap <C-h> <C-w>h
@@ -44,3 +45,43 @@ vnoremap <leader>Y ^y$
 
 nnoremap <silent> <leader>ev :e $MYVIMRC<CR>$gf
 
+
+function! IsAngularProject()
+    return filereadable(findfile('angular.json', '.;'))
+endfunction
+
+if IsAngularProject()
+    " TypeScript file mappings
+    autocmd FileType typescript nnoremap <buffer> <Space><Space> :edit %<.html<CR>
+    autocmd FileType typescript nnoremap <buffer> <Space>c       :edit %<.css<CR>
+    autocmd FileType typescript nnoremap <buffer> <Space>s       :edit %<.test.ts<CR>
+
+    " Mapping to switch from .test.ts back to .ts
+    autocmd BufRead,BufNewFile *.test.ts nnoremap <buffer> <Space>b :edit %:r:r.ts<CR>
+
+    " HTML file mappings
+    autocmd FileType html nnoremap <buffer> <Space><Space> :edit %<.ts<CR>
+    autocmd FileType html nnoremap <buffer> <Space>c       :edit %<.css<CR>
+    autocmd FileType html nnoremap <buffer> <Space>s       :edit %<.test.ts<CR>
+
+    " CSS file mappings
+    autocmd FileType css nnoremap <buffer> <Space>t       :edit %<.ts<CR>
+    autocmd FileType css nnoremap <buffer> <Space>h       :edit %<.html<CR>
+    autocmd FileType css nnoremap <buffer> <Space>s       :edit %<.test.ts<CR>
+endif
+
+" Function to close all buffers except the current one and terminal buffers
+function! CloseAllButCurrent()
+    let current_buf = bufnr('%')
+    let buffers = filter(range(1, bufnr('$')), 'buflisted(v:val)')
+
+    for buf in buffers
+        if buf != current_buf && getbufvar(buf, '&buftype') != 'terminal'
+            execute 'bdelete' buf
+        endif
+    endfor
+    redraw!
+endfunction
+
+" Map the function to <leader>o
+nnoremap <silent> <leader>o :call CloseAllButCurrent()<CR>
